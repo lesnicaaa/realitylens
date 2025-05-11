@@ -13,7 +13,7 @@
     "webrtc",
     "deviceorientation"
   ],
-  "author": "",
+  "author": "Lesnica",
   "license": "MIT",
   "devDependencies": {
     "nodemon": "^2.0.22"

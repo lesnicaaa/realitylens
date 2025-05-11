@@ -2,6 +2,8 @@
 
 A lightweight web-based Augmented Reality (AR) application that runs in mobile browsers.
 
+**Author:** Lesnica
+
 ## Features
 
 - Uses mobile device's rear camera as a background for AR experiences
@@ -31,7 +33,7 @@ This application requires HTTPS to function properly, as modern browsers restric
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/realitylens.git
+git clone https://github.com/lesnicaaa/realitylens.git
 cd realitylens
 ```
 
