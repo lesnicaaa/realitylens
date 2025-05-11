@@ -375,7 +375,7 @@ async function initAR() {
         // Start sensor update rate detection
         startOrientationRateDetection();
         
-        infoElement.textContent = 'Move device to see AR effect';
+        infoElement.textContent = 'Move device to see AR';
     } catch (error) {
         // If rear camera access fails, try using any available camera
         try {
@@ -499,13 +499,13 @@ function requestOrientationPermission() {
                 if (response === 'granted') {
                     initOrientationControls();
                     startOrientationRateDetection();
-                    infoElement.textContent = 'Device orientation permission granted, please move device';
+                    infoElement.textContent = 'Move device to see AR';
                 } else {
-                    infoElement.textContent = 'Device orientation permission needed for AR functionality';
+                    infoElement.textContent = 'Permission needed for AR';
                 }
             })
             .catch(error => {
-                infoElement.textContent = `Permission request failed: ${error.message}`;
+                infoElement.textContent = `Permission error: ${error.message}`;
                 console.error('Failed to request device orientation permission', error);
             });
     }
@@ -545,7 +545,7 @@ function calibrateOrientation() {
 window.addEventListener('DOMContentLoaded', () => {
     // For iOS devices add permission request button
     if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        infoElement.textContent = 'Tap screen to grant device orientation permission';
+        infoElement.textContent = 'Tap to enable AR';
         document.body.addEventListener('click', () => {
             requestOrientationPermission();
             initAR();
