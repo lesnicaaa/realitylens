@@ -6,7 +6,7 @@ A lightweight web-based Augmented Reality (AR) application that runs in mobile b
 
 ## Live Example
 
-Try the live demo: [RealityLens AR Demo](https://realitylens-16pkmyopo-lesnicas-projects.vercel.app)
+Try the live demo: [RealityLens AR Demo](https://realitylens-r29mkrasg-lesnicas-projects.vercel.app)
 
 *Note: Access the demo on a mobile device for the best AR experience. Grant camera and orientation sensor permissions when prompted.*
 
@@ -49,10 +49,11 @@ mkdir -p ssl
 openssl req -nodes -new -x509 -keyout ssl/key.pem -out ssl/cert.pem
 ```
 
-3. Start the server with HTTPS:
+3. Start the server:
 ```bash
-npm start -- --https
+npm start
 ```
+The server will start in HTTPS mode by default.
 
 4. Access the application on your mobile device:
    - Use the HTTPS URL displayed in the console (e.g., https://192.168.1.123:3001)
@@ -80,16 +81,10 @@ npm start -- --https
 
 ## Development
 
-For development, you can run both HTTP and HTTPS servers simultaneously:
-
-```bash
-npm start -- --http --https
-```
-
 Server options:
-- HTTP (default): `npm start`
-- HTTPS only: `npm start -- --https`
-- Both: `npm start -- --http --https`
+- HTTPS (default): `npm start`
+- HTTP only: `npm run start:http`
+- Both HTTP and HTTPS: `npm start -- --http`
 
 ## Deployment
 
