@@ -10,6 +10,10 @@ Try the live demo: [RealityLens AR Demo](https://realitylens-r29mkrasg-lesnicas-
 
 *Note: Access the demo on a mobile device for the best AR experience. Grant camera and orientation sensor permissions when prompted.*
 
+### Demo Preview
+
+![RealityLens Demo](assets/images/demo.webp)
+
 ## Features
 
 - Uses mobile device's rear camera as a background for AR experiences
