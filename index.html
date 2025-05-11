@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>RealityLens - Web AR Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #arContainer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            z-index: 100;
+        }
+        
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        #resetBtn {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+    </style>
+    <!-- Script to handle ngrok warning -->
+    <script>
+        // Add ngrok-skip-browser-warning header to all fetch and XHR requests
+        (function() {
+            // Override original fetch
+            const originalFetch = window.fetch;
+            window.fetch = function(resource, init) {
+                init = init || {};
+                init.headers = init.headers || {};
+                // Add ngrok skip warning header
+                init.headers['ngrok-skip-browser-warning'] = '1';
+                return originalFetch(resource, init);
+            };
+            
+            // Override original XMLHttpRequest.prototype.open
+            const originalOpen = XMLHttpRequest.prototype.open;
+            XMLHttpRequest.prototype.open = function() {
+                const result = originalOpen.apply(this, arguments);
+                this.setRequestHeader('ngrok-skip-browser-warning', '1');
+                return result;
+            };
+            
+            // If page is loaded with ngrok warning, automatically reload
+            if (document.title.includes('ngrok')) {
+                // Test if we can skip the warning by loading an image with the header
+                const img = new Image();
+                img.onload = function() {
+                    // Success, redirect to original URL
+                    window.location.reload(true);
+                };
+                img.onerror = function() {
+                    // Failed, no problem, continue
+                };
+                const testUrl = window.location.origin + '/favicon.ico';
+                const xhr = new XMLHttpRequest();
+                xhr.open('GET', testUrl, true);
+                xhr.setRequestHeader('ngrok-skip-browser-warning', '1');
+                xhr.send();
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div id="arContainer"></div>
+    <div id="info">Loading...</div>
+    <div id="controls">
+        <button id="resetBtn">Reset Position</button>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+    <script src="app.js"></script>
+    <script>
+        // Reset button functionality
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            // If cube is a global variable, we can operate on it directly
+            if (typeof cube !== 'undefined') {
+                cube.position.set(0, 0, -1);
+            }
+        });
+    </script>
+</body>
+</html> 

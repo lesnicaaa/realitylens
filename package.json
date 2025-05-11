@@ -1,0 +1,24 @@
+{
+  "name": "realitylens",
+  "version": "1.0.0",
+  "description": "Simple Web AR application based on Three.js for mobile AR experience",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "AR",
+    "three.js",
+    "webrtc",
+    "deviceorientation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  }
+} 
