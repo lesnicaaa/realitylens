@@ -433,8 +433,11 @@ function setupVideoBackground(stream) {
     video = document.createElement('video');
     video.srcObject = stream;
     video.playsInline = true; // Important: allows inline playback
-    video.autoplay = true;
     video.muted = true;
+    video.autoplay = true;
+    video.setAttribute('playsinline', ''); // Double ensure iOS inline playback
+    video.setAttribute('webkit-playsinline', ''); // For older iOS versions
+    video.setAttribute('muted', ''); // Ensure muted state for autoplay
     video.style.position = 'absolute';
     video.style.width = '100%';
     video.style.height = '100%';
@@ -444,16 +447,78 @@ function setupVideoBackground(stream) {
     video.style.zIndex = '-1'; // Put behind Three.js canvas
     document.getElementById('arContainer').appendChild(video);
     
+    // iOS Safari specific fix - add additional user interaction to ensure video plays
+    let playAttempts = 0;
+    const maxPlayAttempts = 5;
+    
+    const attemptToPlay = () => {
+        playAttempts++;
+        console.log(`Play attempt ${playAttempts}`);
+        
+        // Try playing the video
+        const playPromise = video.play();
+        
+        if (playPromise !== undefined) {
+            playPromise.then(() => {
+                console.log('Video playback started successfully');
+                // Ensure video is visible
+                setTimeout(() => {
+                    if (EnvUtil.isIos) {
+                        // Force repaint on iOS
+                        video.style.display = 'none';
+                        setTimeout(() => {
+                            video.style.display = 'block';
+                        }, 10);
+                    }
+                }, 100);
+            }).catch(e => {
+                console.error('Auto-play failed:', e);
+                
+                // If we've tried too many times, show user instructions
+                if (playAttempts >= maxPlayAttempts) {
+                    infoElement.textContent = 'Tap to start camera';
+                    
+                    // Setup global tap handler as last resort
+                    document.body.addEventListener('click', () => {
+                        video.play().catch(err => {
+                            console.error('Manual play failed:', err);
+                            infoElement.textContent = 'Camera permission issue. Try reloading.';
+                        });
+                    }, { once: true });
+                    
+                    return;
+                }
+                
+                // Try again after a delay
+                setTimeout(attemptToPlay, 200 * playAttempts);
+            });
+        } else {
+            // Older browsers might not return a promise
+            if (playAttempts >= maxPlayAttempts) {
+                infoElement.textContent = 'Tap to start camera';
+                
+                document.body.addEventListener('click', () => {
+                    video.play();
+                }, { once: true });
+            } else {
+                setTimeout(attemptToPlay, 200 * playAttempts);
+            }
+        }
+    };
+    
     // Ensure video is loaded and starts playing
     video.addEventListener('loadedmetadata', () => {
-        video.play().catch(e => {
-            console.error('Auto-play failed:', e);
-            infoElement.textContent = 'Tap screen to start video stream';
-            document.body.addEventListener('click', () => {
-                video.play();
-            }, { once: true });
-        });
+        console.log('Video metadata loaded');
+        attemptToPlay();
     });
+    
+    // Add additional listener in case loadedmetadata doesn't fire
+    setTimeout(() => {
+        if (playAttempts === 0) {
+            console.log('Delayed play attempt');
+            attemptToPlay();
+        }
+    }, 1000);
 }
 
 // Initialize device orientation controls
