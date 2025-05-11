@@ -9,14 +9,11 @@ const path = require('path');
 const args = process.argv.slice(2);
 const useHttps = args.includes('--https') || args.includes('-s');
 const useHttp = args.includes('--http') || args.includes('-h') || !useHttps; // Default HTTP
-const httpPort = process.env.HTTP_PORT || 3000;
+const httpPort = process.env.PORT || 3000; // Use PORT environment variable for Vercel
 const httpsPort = process.env.HTTPS_PORT || 3001;
 
-// SSL certificate configuration
-const sslOptions = {
-    key: fs.existsSync('ssl/key.pem') ? fs.readFileSync('ssl/key.pem') : null,
-    cert: fs.existsSync('ssl/cert.pem') ? fs.readFileSync('ssl/cert.pem') : null
-};
+// Production check for Vercel
+const isProduction = process.env.NODE_ENV === 'production';
 
 const MIME_TYPES = {
     '.html': 'text/html',
@@ -64,25 +61,31 @@ function handleRequest(req, res) {
     });
 }
 
-// Display IP address function
-function getLocalIPs() {
-    const { networkInterfaces } = require('os');
-    const nets = networkInterfaces();
-    const results = [];
+// For Vercel deployment, export the request handler
+module.exports = (req, res) => {
+    handleRequest(req, res);
+};
 
-    for (const name of Object.keys(nets)) {
-        for (const net of nets[name]) {
-            // Skip internal and non-IPv4 addresses
-            if (net.family === 'IPv4' && !net.internal) {
-                results.push(net.address);
+// Only start the local server if not in production (not on Vercel)
+if (!isProduction) {
+    // Display IP address function
+    function getLocalIPs() {
+        const { networkInterfaces } = require('os');
+        const nets = networkInterfaces();
+        const results = [];
+
+        for (const name of Object.keys(nets)) {
+            for (const net of nets[name]) {
+                // Skip internal and non-IPv4 addresses
+                if (net.family === 'IPv4' && !net.internal) {
+                    results.push(net.address);
+                }
             }
         }
+        return results;
     }
-    return results;
-}
 
-// Start HTTP server
-if (useHttp) {
+    // Start HTTP server for local development
     const httpServer = http.createServer(handleRequest);
     httpServer.listen(httpPort, () => {
         console.log(`HTTP server running at http://localhost:${httpPort}`);
@@ -97,41 +100,9 @@ if (useHttp) {
         }
     });
     console.log('Note: Some browsers may restrict camera and sensor access in HTTP mode');
-}
-
-// Start HTTPS server
-if (useHttps) {
-    // Check if SSL certificates exist
-    if (!sslOptions.key || !sslOptions.cert) {
-        console.error('Error: SSL certificate files not found. Please ensure key.pem and cert.pem exist in the ssl directory.');
-        console.log('Tip: You can generate a self-signed certificate with the following commands:');
-        console.log('  mkdir -p ssl');
-        console.log('  openssl req -nodes -new -x509 -keyout ssl/key.pem -out ssl/cert.pem');
-        
-        if (!useHttp) {
-            process.exit(1); // Exit if using only HTTPS and certificates don't exist
-        }
-    } else {
-        const httpsServer = https.createServer(sslOptions, handleRequest);
-        httpsServer.listen(httpsPort, () => {
-            console.log(`HTTPS server running at https://localhost:${httpsPort}`);
-            
-            const ips = getLocalIPs();
-            if (ips.length > 0) {
-                ips.forEach(ip => {
-                    console.log(`Mobile devices on the same network can access: https://${ip}:${httpsPort}`);
-                });
-            } else {
-                console.log(`Mobile devices on the same network can access: https://<your computer IP address>:${httpsPort}`);
-            }
-            console.log('Note: When using a self-signed certificate, browsers will display a security warning, requiring manual selection of "Continue"');
-        });
-    }
-}
-
-// Display usage help
-console.log('\nUsage:');
-console.log('  npm start         - Start HTTP server (default)');
-console.log('  npm start -- --https   - Start HTTPS server');
-console.log('  npm start -- --http --https - Start both HTTP and HTTPS servers');
-console.log('\nTip: Run "ipconfig" (Windows) or "ifconfig" (Mac/Linux) in the terminal to see your IP address'); 
+    
+    // Display usage help
+    console.log('\nUsage:');
+    console.log('  npm start         - Start HTTP server (default)');
+    console.log('\nTip: Run "ipconfig" (Windows) or "ifconfig" (Mac/Linux) in the terminal to see your IP address');
+} 
