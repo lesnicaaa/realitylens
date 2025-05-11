@@ -4,8 +4,9 @@
   "description": "Simple Web AR application based on Three.js for mobile AR experience",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "start": "node server.js --https",
+    "start:http": "node server.js",
+    "dev": "nodemon server.js --https"
   },
   "keywords": [
     "AR",
