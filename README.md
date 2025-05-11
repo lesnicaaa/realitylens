@@ -78,6 +78,7 @@ The server will start in HTTPS mode by default.
 - If the cube doesn't appear, check that you've granted camera permissions
 - If the cube doesn't move with device orientation, check sensor permissions
 - Performance may vary between devices based on sensor quality and update rates
+- For iOS devices on Safari, if the camera feed doesn't appear after granting permissions, try tapping the screen or reload the page
 
 ## Development
 
