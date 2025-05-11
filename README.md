@@ -12,7 +12,7 @@ Try the live demo: [RealityLens AR Demo](https://realitylens-r29mkrasg-lesnicas-
 
 ### Demo Preview
 
-![RealityLens Demo](assets/images/demo.webp)
+<img src="assets/images/demo.webp" alt="RealityLens Demo" width="400">
 
 ## Features
 
