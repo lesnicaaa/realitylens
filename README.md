@@ -4,6 +4,12 @@ A lightweight web-based Augmented Reality (AR) application that runs in mobile b
 
 **Author:** Lesnica
 
+## Live Example
+
+Try the live demo: [RealityLens AR Demo](https://realitylens-16pkmyopo-lesnicas-projects.vercel.app)
+
+*Note: Access the demo on a mobile device for the best AR experience. Grant camera and orientation sensor permissions when prompted.*
+
 ## Features
 
 - Uses mobile device's rear camera as a background for AR experiences
@@ -84,6 +90,29 @@ Server options:
 - HTTP (default): `npm start`
 - HTTPS only: `npm start -- --https`
 - Both: `npm start -- --http --https`
+
+## Deployment
+
+### Vercel (Recommended)
+
+This project is configured for easy deployment on Vercel:
+
+1. Install Vercel CLI:
+```bash
+npm install -g vercel
+```
+
+2. Deploy to Vercel:
+```bash
+vercel
+```
+
+3. For production deployment:
+```bash
+vercel --prod
+```
+
+The deployment will automatically provide you with an HTTPS URL that works perfectly for AR applications.
 
 ## License
 
